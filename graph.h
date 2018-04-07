@@ -81,6 +81,7 @@
 #include <fstream>
 #include <vector>
 #include <iostream>
+#include <queue>
 
 #include "grman/grman.h"
 
@@ -158,6 +159,9 @@ class Sommet
         std::string m_nom;
         int m_coordx;
         int m_coordy;
+        bool is_marq = false;
+        int m_color = 0;
+
 
     public:
 
@@ -293,15 +297,20 @@ class GraphInterface
         grman::WidgetText m_checkbox_label_paus;
         grman::WidgetButton m_bouton_charge;       // Sera le bouton avec le texte chargement
         grman::WidgetText m_bouton_label_charge;
-        grman::WidgetButton m_bouton_ajout;       // Sera le bouton avec le texte ajouter
-        grman::WidgetText m_bouton_label_ajout;
+        grman::WidgetButton m_bouton_ajout_sommet;       // Sera le bouton avec le texte ajouter
+        grman::WidgetText m_bouton_label_ajout_sommet;
+        grman::WidgetButton m_bouton_ajout_arc;       // Sera le bouton avec le texte ajouter
+        grman::WidgetText m_bouton_label_ajout_arc;
         grman::WidgetButton m_bouton_suppr_s;       // Sera le bouton avec le texte supprimer les sommet
         grman::WidgetText m_bouton_label_suppr_s;
         grman::WidgetButton m_bouton_suppr_a;       // Sera le bouton avec le texte supprimer les arc
         grman::WidgetText m_bouton_label_suppr_a;
         grman::WidgetButton m_bouton_quit;       // Sera le bouton avec le texte supprimer
         grman::WidgetText m_bouton_label_quit;     //bouton pour quitter l'application
-
+        grman::WidgetButton m_bouton_connexe; //bouton pour chercher les compo fortement connexe
+        grman::WidgetText m_bouton_label_connexe;
+        grman::WidgetButton m_bouton_retirer; //bouton pour retirer les marquages
+        grman::WidgetText m_bouton_label_retirer;
         // A compléter éventuellement par des widgets de décoration ou
         // d'édition (boutons ajouter/enlever ...)
 
@@ -317,8 +326,8 @@ class GraphInterface
 
 class Graph
 {
-    private :
-
+    //private :
+public :
         /// La "liste" des arêtes
         std::map<int, Arc> m_arcs;
 
@@ -336,7 +345,7 @@ class Graph
 
 
 
-    public:
+    //public:
 
         /// Les constructeurs sont à compléter selon vos besoin...
         /// Ici on ne donne qu'un seul constructeur qui peut utiliser une interface
@@ -346,6 +355,7 @@ class Graph
         void add_interfaced_vertex(int idx, double value, int x, int y, std::string pic_name="", int pic_idx=0 );
         void add_interfaced_Sommet(int idx, double value, int x, int y, std::string path, int pic_idx );
         void add_interfaced_edge(int idx, int vert1, int vert2, double weight=0);
+        void add_interfaced_Arc(int idx, int id_vert1, int id_vert2, double weight);
 
         /// Méthode spéciale qui construit un graphe arbitraire (démo)
         /// Voir implémentation dans le .cpp
@@ -357,7 +367,17 @@ class Graph
         void sauvegarde_graph(); //enregistre tout un graphe, positions, ect...
         bool quitter();
         void suppr_arc();
+        //void supprimer_arc(int idx);
         void suppr_sommet();
+        //std::map<int, Sommet> suppr_sommet(std::map<int, Sommet> Sommets);
+        void cherche_connexe();
+        int cherche_idx_s();
+        int cherche_idx_a();
+        void remise_zero();
+        void affiche_sommets(std::map<int, Sommet> sommets);
+
+        //std::map<int, Sommet> getSommet (){}
+
 
 
         /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface

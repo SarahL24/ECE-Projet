@@ -1,4 +1,3 @@
-int variable_globale_inch_allah_sa_marche=0;
 
 #include "graph.h"
 
@@ -13,6 +12,7 @@ SommetInterface::SommetInterface(int idx, int x, int y, std::string pic_name, in
     m_top_box.set_pos(x, y);
     m_top_box.set_dim(130, 100);
     m_top_box.set_moveable();
+
 
     // Le slider de réglage de valeur
     m_top_box.add_child( m_slider_value );
@@ -55,6 +55,13 @@ void Sommet::pre_update()
 
     /// Copier la valeur locale de la donnée m_value vers le label sous le slider
     m_interface->m_label_value.set_message( std::to_string( (int)m_value) );
+
+    if(m_color != 0)
+    {
+        m_interface->m_top_box.set_bg_color(MARRON);
+    }
+    else {m_interface->m_top_box.set_bg_color(BLANC);}
+
 }
 
 
@@ -178,27 +185,48 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
     m_bouton_charge.add_child(m_bouton_label_charge);
     m_bouton_label_charge.set_message("Chargement");
 
-    //troisieme bouton pour ajouter
-    m_tool_box.add_child(m_bouton_ajout);
-    m_bouton_ajout.set_frame(3,58,80,20);
-    m_bouton_ajout.set_bg_color(VERTCLAIR);
-    m_bouton_ajout.add_child(m_bouton_label_ajout);
-    m_bouton_label_ajout.set_message("Ajouter");
+    //troisieme bouton pour ajouter un sommet
+    m_tool_box.add_child(m_bouton_ajout_sommet);
+    m_bouton_ajout_sommet.set_frame(3,58,80,20);
+    m_bouton_ajout_sommet.set_bg_color(VERTCLAIR);
+    m_bouton_ajout_sommet.add_child(m_bouton_label_ajout_sommet);
+    m_bouton_label_ajout_sommet.set_message("Ajouter sommet");
+
+    //troisieme bouton pour ajouter un arc
+    m_tool_box.add_child(m_bouton_ajout_arc);
+    m_bouton_ajout_arc.set_frame(3,108,80,20);
+    m_bouton_ajout_arc.set_bg_color(VERTCLAIR);
+    m_bouton_ajout_arc.add_child(m_bouton_label_ajout_arc);
+    m_bouton_label_ajout_arc.set_message("Ajouter arc");
 
     //quatrieme bouton pour supprimer sommet
     m_tool_box.add_child(m_bouton_suppr_s);
-    m_bouton_suppr_s.set_frame(3,83,80,40);
+    m_bouton_suppr_s.set_frame(3,83,80,20);
     m_bouton_suppr_s.set_bg_color(VERTCLAIR);
     m_bouton_suppr_s.add_child(m_bouton_label_suppr_s);
     m_bouton_label_suppr_s.set_message("Supprimer sommet");
 
     //bouton pour supprimer arc
     m_tool_box.add_child(m_bouton_suppr_a);
-    m_bouton_suppr_a.set_frame(3,128,80,40);
+    m_bouton_suppr_a.set_frame(3,133,80,20);
     m_bouton_suppr_a.set_bg_color(VERTCLAIR);
     m_bouton_suppr_a.add_child(m_bouton_label_suppr_a);
     m_bouton_label_suppr_a.set_message("Supprimer arc");
 
+
+    //bouton pour chercher connexite du graphe
+    m_tool_box.add_child(m_bouton_connexe);
+    m_bouton_connexe.set_frame(3,158,80,20);
+    m_bouton_connexe.set_bg_color(VERTCLAIR);
+    m_bouton_connexe.add_child(m_bouton_label_connexe);
+    m_bouton_label_connexe.set_message("compo forte connexe");
+
+    //bouton pour chercher retirer les marquages du graphe
+    m_tool_box.add_child(m_bouton_retirer);
+    m_bouton_retirer.set_frame(3,675,80,20);
+    m_bouton_retirer.set_bg_color(VERTCLAIR);
+    m_bouton_retirer.add_child(m_bouton_label_retirer);
+    m_bouton_label_retirer.set_message("retirer marq");
 
     //bouton pour quitter
     m_tool_box.add_child(m_bouton_quit);
@@ -271,21 +299,59 @@ void Graph::update()
 
 }
 
+///sert a renvoyer l'index du sommet le plus grand
+int Graph::cherche_idx_s()
+{
+    std::map<int,Sommet>::iterator it;
+    int tmp = m_Sommets.begin()->first;
+
+    for( it = m_Sommets.begin();it!= m_Sommets.end();it++)
+    {
+
+        if( tmp < it->first )
+        {
+            tmp = it->first;
+        }
+    }
+    std::cout<<"index : "<< tmp<<std::endl;
+    return tmp;
+}
+
+int Graph::cherche_idx_a()
+{
+    std::map<int,Arc>::iterator it;
+    int tmp = m_arcs.begin()->first;
+
+    for( it = m_arcs.begin();it!= m_arcs.end();it++)
+    {
+
+        if( tmp < it->first )
+        {
+            tmp = it->first;
+        }
+    }
+    std::cout<<"index : "<< tmp<<std::endl;
+    return tmp;
+}
+
 /// Aide à l'ajout de sommets interfacés
 void Graph::add_interfaced_vertex(int idx, double value, int x, int y, std::string pic_name, int pic_idx )
 {
-    if ( m_Sommets.find( variable_globale_inch_allah_sa_marche)!= m_Sommets.end() )
+    if ( m_Sommets.find( idx)!= m_Sommets.end() )
     {
         std::cerr << "Error adding vertex at idx=" << idx << " already used..." << std::endl;
         throw "Error adding vertex";
     }
     // Création d'une interface de sommet
-    SommetInterface *vi = new SommetInterface( variable_globale_inch_allah_sa_marche, x, y, pic_name, pic_idx);
+    SommetInterface *vi = new SommetInterface( idx, x, y, pic_name+".jpg", pic_idx);
     // Ajout de la top box de l'interface de somet
     m_interface->m_main_box.add_child(vi->m_top_box);
     // On peut ajouter directement des vertices dans la map avec la notation crochet :
     m_Sommets[idx] = Sommet(value, vi);
-     variable_globale_inch_allah_sa_marche++;
+    m_Sommets[idx].m_coordx = x;
+    m_Sommets[idx].m_coordy = y;
+    m_Sommets[idx].m_nom = pic_name;
+
 }
 
 
@@ -297,11 +363,11 @@ void Graph::add_interfaced_Sommet(int idx, double value, int x, int y, std::stri
     std::string name;
     std::string temp;
     int choix;
+    int idx_g;
+    bool ok = false;
+    std::vector<std::string> noms_animaux;
 
-
-
-
-    if ( m_interface->m_bouton_ajout.get_value()== true)
+    if ( m_interface->m_bouton_ajout_sommet.get_value()== true)
     {
         while(choix!=1 && choix!=2 && choix !=3) //blindage choix
         {
@@ -313,11 +379,11 @@ void Graph::add_interfaced_Sommet(int idx, double value, int x, int y, std::stri
             }
             if(choix==2)
             {
-            path_txt = "ressources/graphe2/Noms_graphe2";
+            path_txt = "ressources/graphe2/Noms_Sib.txt";
             }
             if(choix ==3)
             {
-                path_txt = "ressources/graphe3/Noms_Sib.txt";
+                path_txt = "ressources/graphe3/Noms_Prehi.txt";
             }
         }
         std::ifstream fichier (path_txt,std::ios::in);
@@ -328,17 +394,29 @@ void Graph::add_interfaced_Sommet(int idx, double value, int x, int y, std::stri
             while(getline(fichier, line))
                 {
                     std::cout<<line<<std::endl;
+                    noms_animaux.push_back(line);
                 }
 
         }
         else  // sinon
                 {std::cerr << "Impossible d'ouvrir le fichier ici !" << std::endl;}
-                std::cout<<"Chosir stp"<<std::endl;
+
+        while(ok == false)//blindage
+          {
+            std::cout<<"Choisir l'animal a ajouter s'il vous plait"<<std::endl;
             std::cin>> name;
-            name+=".jpg";
-            add_interfaced_vertex(variable_globale_inch_allah_sa_marche,value,x,y,name,pic_idx);
+            for(unsigned int i=0; i<noms_animaux.size();i++)
+            {
+                if(noms_animaux[i] == name)
+                {
+                    ok = true;
+                }
+            }
+          }
+            idx_g = cherche_idx_s();
+            add_interfaced_vertex(idx_g+1,value,x,y,name,pic_idx);
     }
- m_interface->m_bouton_ajout.set_value(false);
+ m_interface->m_bouton_ajout_sommet.set_value(false);
 }
 
 
@@ -362,8 +440,55 @@ void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weig
     m_arcs[idx] = Arc(weight, ei);
     m_arcs[idx].m_from = id_vert1;
     m_arcs[idx].m_to = id_vert2;
-    m_Sommets[id_vert1].m_out.push_back(idx);
-    m_Sommets[id_vert2].m_in.push_back(idx);
+    m_arcs[idx].m_index = idx;
+    m_Sommets[id_vert2].m_in.push_back(id_vert1);
+    m_Sommets[id_vert1].m_out.push_back(id_vert2);
+
+}
+
+///Ajout d'arc
+void Graph::add_interfaced_Arc(int idx, int id_vert1, int id_vert2, double weight)
+{
+    int depart,arriver;
+    int idx_g;
+    bool ok = false;
+
+    if( m_interface->m_bouton_ajout_arc.get_value()== true)
+    {
+        std::cout<<"Creer un arc"<<std::endl;
+
+        while(ok == false) //blindage
+        {
+            std::cout<<"depart: ";
+            std::cin>>depart;
+            for(auto &elem : m_Sommets)
+            {
+                if(elem.first == depart)
+                {
+                    ok = true;
+                }
+            }
+        }
+        ok = false;
+        while(ok == false) //blindage
+        {
+            std::cout<<"arriver: ";
+            std::cin>>arriver;
+            for(auto &elem : m_Sommets)
+            {
+                if(elem.first == arriver)
+                {
+                    ok = true;
+                }
+            }
+        }
+
+        idx_g = cherche_idx_a();
+        add_interfaced_edge(idx_g+1,depart,arriver,0);
+
+    }
+
+  m_interface->m_bouton_ajout_arc.set_value(false);
 }
 
 ///sert a savoir si le bouton charge est appuyé, si oui, on lance le chargement, en effacant toutes les données existantes
@@ -406,11 +531,11 @@ void Graph::charge_file(bool charge)
             }
             if(choix == 2)
             {
-            path = "ressources/graphe2/Graphe_Prehi.txt";
+            path = "ressources/graphe2/Graphe_Sib.txt";
             }
             if(choix == 3)
             {
-                path = "ressources/graphe3/Graphe_Sib.txt";
+                path = "ressources/graphe3/Graphe_Prehi.txt";
             }
         }
 
@@ -458,11 +583,7 @@ void Graph::charge_file(bool charge)
                     value = atoi(str_tmp.c_str());
                     aretes_tmp.pop_back();
                     nom_sommet_temp = aretes_tmp.back();;
-                    //add_interfaced_vertex(i, value, coordsx, coordsy, nom_sommet_temp+".bmp");
-                    add_interfaced_vertex(i, value, coordsx, coordsy, nom_sommet_temp+".jpg");
-                    m_Sommets[i].m_nom = nom_sommet_temp;
-                    m_Sommets[i].m_coordx = coordsx;
-                    m_Sommets[i].m_coordy = coordsy;
+                    add_interfaced_vertex(i, value, coordsx, coordsy, nom_sommet_temp);
                 }
 
                 std::cout<<aretes_tmp.size()<<std::endl;
@@ -501,7 +622,6 @@ void Graph::charge_file(bool charge)
                     str_tmp = aretes_tmp.back();
                     m1 = atoi(str_tmp.c_str());
                     add_interfaced_edge(i, m1, m2, poids);
-                    m_arcs[i].m_index = i;
                 } //fin for
             } //fin if fichier
             else  // sinon
@@ -539,12 +659,10 @@ void Graph::sauvegarde_graph()
             else
                 {std::cerr << "Impossible d'ouvrir le fichier !" << std::endl;}
     }
-
-
     m_interface->m_bouton_sauv.set_value(false);
 }
 
-
+///sert a savoir si l'utilisateur veut quitter
 bool Graph::quitter()
 {
         if(m_interface->m_bouton_quit.get_value()== true)
@@ -558,16 +676,28 @@ bool Graph::quitter()
 void Graph::suppr_arc()
 {
     int idx_arc;
+    bool ok =false;
     if(m_interface->m_bouton_suppr_a.get_value()==true)
     {
 
-        std::cout<<"entrer l'index de l'arc que vous voulez supprimer : ";
-        std::cin>> idx_arc;
+        while(ok == false) //blindage
+        {
+            std::cout<<"entrer l'index de l'arc que vous voulez supprimer : ";
+            std::cin>> idx_arc;
+            for(auto &elem : m_arcs)
+            {
+                if(elem.first == idx_arc)
+                {
+                    ok = true;
+                }
+            }
+        }
+
         //ref sur l'arc a enlever
         Arc & arc_sup = m_arcs.at(idx_arc);
         std::cout<< "arc a enlever : "<<idx_arc<<" "<<arc_sup.m_from<<" -> "<<arc_sup.m_to<<"  "<<arc_sup.m_weight<<std::endl;
 
-        std::cout<<m_Sommets[arc_sup.m_from].m_in.size()<< " "<<m_Sommets[arc_sup.m_from].m_out.size()<< " "<<m_Sommets[arc_sup.m_to].m_in.size()<< " "<<m_Sommets[arc_sup.m_to].m_out.size()<<std::endl;
+        std::cout<<" pred initial : "<<m_Sommets[arc_sup.m_from].m_in.size()<< " succ initial : "<<m_Sommets[arc_sup.m_from].m_out.size()<< " pred final :  "<<m_Sommets[arc_sup.m_to].m_in.size()<< " succ final : "<<m_Sommets[arc_sup.m_to].m_out.size()<<std::endl;
         std::cout<< m_arcs.size()<<std::endl;
 
         if(m_interface && arc_sup.m_interface) //on efface dans l'interface
@@ -576,28 +706,82 @@ void Graph::suppr_arc()
         }
 
         //on efface dans les sommets
-        std::vector<int> &vefrom = m_Sommets[arc_sup.m_from].m_out; //
-        std::vector<int> &veto = m_Sommets[arc_sup.m_to].m_in;
-        vefrom.erase(std::remove(vefrom.begin(),vefrom.end(),idx_arc),vefrom.end());
-        veto.erase(std::remove(veto.begin(),veto.end(),idx_arc),veto.end());
+
+        /*for(unsigned int i = 0; i<m_Sommets[m_arcs.at(idx_arc).m_from].m_out.size(); i++)
+        {
+            if(m_arcs.at(idx_arc).m_to == m_Sommets[m_arcs.at(idx_arc).m_from].m_out[i]) {std::cout<<"OK"<<std::endl;}
+            //std::cout<<m_Sommets[m_arcs.at(idx_arc).m_from].m_out[i]<<std::endl;
+            std::cout<<"succ : "<<m_Sommets[m_arcs.at(idx_arc).m_from].m_out[i]<<std::endl;
+            std::cout<<m_arcs.at(idx_arc).m_to<<std::endl;
+        }
+
+
+        for(unsigned int i = 0; i<m_Sommets[m_arcs.at(idx_arc).m_to].m_in.size(); i++)
+        {
+            if(m_Sommets[m_arcs.at(idx_arc).m_to].m_in[i] == m_arcs.at(idx_arc).m_from ){std::cout<<"OK"<<std::endl;}
+            std::cout<<"pred: "<<m_Sommets[m_arcs.at(idx_arc).m_to].m_in[i]<<std::endl;
+            std::cout<<m_arcs.at(idx_arc).m_from<<std::endl;
+        }*/
+        m_Sommets[arc_sup.m_from].m_out.erase(std::remove(m_Sommets[arc_sup.m_from].m_out.begin(),m_Sommets[arc_sup.m_from].m_out.end(),m_arcs.at(idx_arc).m_to),m_Sommets[arc_sup.m_from].m_out.end());
+        m_Sommets[arc_sup.m_to].m_in.erase(std::remove(m_Sommets[arc_sup.m_to].m_in.begin(),m_Sommets[arc_sup.m_to].m_in.end(),m_arcs.at(idx_arc).m_from),m_Sommets[arc_sup.m_to].m_in.end());
         m_arcs.erase(idx_arc);
 
-        std::cout<<m_Sommets[arc_sup.m_from].m_in.size()<< " "<<m_Sommets[arc_sup.m_from].m_out.size()<< " "<<m_Sommets[arc_sup.m_to].m_in.size()<< " "<<m_Sommets[arc_sup.m_to].m_out.size()<<std::endl;
+        std::cout<<" pred initial : "<<m_Sommets[arc_sup.m_from].m_in.size()<< " succ initial : "<<m_Sommets[arc_sup.m_from].m_out.size()<< " pred final :  "<<m_Sommets[arc_sup.m_to].m_in.size()<< " succ final : "<<m_Sommets[arc_sup.m_to].m_out.size()<<std::endl;
         std::cout<< m_arcs.size()<<std::endl;
+
     }
     m_interface->m_bouton_suppr_a.set_value(false);
 
 }
 
+/*
+void Graph::supprimer_arc(int idx)
+{
+    for(int i = 0; i<m_arcs.size();i++)
+    {
+        std::cout<<m_Sommets[idx].m_in<<std::endl;
+        std::cout<<m_Sommets[m_arcs[i].m_from].m_in<<std::endl;
+    }
+    Arc & arc_sup = m_arcs.at(idx_arc);
+    std::cout<< "arc a enlever : "<<idx_arc<<" "<<arc_sup.m_from<<" -> "<<arc_sup.m_to<<"  "<<arc_sup.m_weight<<std::endl;
+
+    std::cout<<" pred initial : "<<m_Sommets[arc_sup.m_from].m_in.size()<< " succ initial : "<<m_Sommets[arc_sup.m_from].m_out.size()<< " pred final :  "<<m_Sommets[arc_sup.m_to].m_in.size()<< " succ final : "<<m_Sommets[arc_sup.m_to].m_out.size()<<std::endl;
+    std::cout<< m_arcs.size()<<std::endl;
+
+    if(m_interface && arc_sup.m_interface) //on efface dans l'interface
+    {
+        m_interface->m_main_box.remove_child(arc_sup.m_interface->m_top_edge);
+    }
+    m_Sommets[arc_sup.m_from].m_out.erase(std::remove(m_Sommets[arc_sup.m_from].m_out.begin(),m_Sommets[arc_sup.m_from].m_out.end(),m_arcs.at(idx_arc).m_to),m_Sommets[arc_sup.m_from].m_out.end());
+    m_Sommets[arc_sup.m_to].m_in.erase(std::remove(m_Sommets[arc_sup.m_to].m_in.begin(),m_Sommets[arc_sup.m_to].m_in.end(),m_arcs.at(idx_arc).m_from),m_Sommets[arc_sup.m_to].m_in.end());
+    m_arcs.erase(idx_arc);
+
+    std::cout<<" pred initial : "<<m_Sommets[arc_sup.m_from].m_in.size()<< " succ initial : "<<m_Sommets[arc_sup.m_from].m_out.size()<< " pred final :  "<<m_Sommets[arc_sup.m_to].m_in.size()<< " succ final : "<<m_Sommets[arc_sup.m_to].m_out.size()<<std::endl;
+    std::cout<< m_arcs.size()<<std::endl;
+}
+
+*/
 ///supprime un sommet
 void Graph::suppr_sommet()
 {
     int idx_s;
+    bool ok = false;
     if(m_interface->m_bouton_suppr_s.get_value()==true)
     {
-
-        std::cout<<"entrer l'index du sommet que vous voulez supprimer ( il faut supprimer les arcs qui le relie avant) : ";
-        std::cin>> idx_s;
+        std::cout<<"taille avant : "<<m_Sommets.size()<<std::endl;
+        while(ok == false) //blindage
+        {
+            std::cout<<"entrer l'index du sommet que vous voulez supprimer ( il faut supprimer les arcs qui le relie avant) : ";
+            std::cin>> idx_s;
+            for(auto &elem : m_Sommets)
+            {
+                std::cout<<" index "<<elem.first<<std::endl;
+                if(elem.first == idx_s)
+                {
+                    ok = true;
+                }
+            }
+        }
 
         Sommet & somm_sup = m_Sommets.at(idx_s);
         std::cout<< "sommet a enlever : "<<idx_s<<" "<<somm_sup.m_nom<<"  "<<somm_sup.m_value<<std::endl;
@@ -606,9 +790,237 @@ void Graph::suppr_sommet()
         {
             m_interface->m_main_box.remove_child(somm_sup.m_interface->m_top_box);
         }
+
+        //on efface dans la map de sommet du graphe
         m_Sommets.erase(idx_s);
+        std::cout<<"taille apres : "<<m_Sommets.size()<<std::endl;
+        for(auto &elem : m_Sommets)
+            {
+                std::cout<<" index "<<elem.first<<std::endl;
+            }
     }
     m_interface->m_bouton_suppr_s.set_value(false);
+}
+
+void Graph::affiche_sommets(std::map<int, Sommet> sommets)
+{
+    if(m_interface->m_bouton_retirer.get_value() == true)
+    {
+        for(auto &elem : sommets)
+            {
+                std::cout<<" index "<<elem.first<<std::endl;
+            }
+    }
+    m_interface->m_bouton_retirer.set_value(false);
+}
+
+///cherche les compo connexes *******ATTENTION A L'UTILISATION POUR LA SOUTENANCE ! BANCAL**********
+void Graph::cherche_connexe()
+{
+    int idx = 80;
+    int j = 0;
+    bool ok = false;
+    std::queue<Sommet> file_pred;
+    std::queue<Sommet> file_succ;
+    std::vector<Sommet> comp_forte_connexe;
+    std::vector<Sommet> vect_pred;
+    std::vector<Sommet> vect_succ;
+    std::vector<std::vector<Sommet>> liste_compo_connexe_p;
+    std::vector<std::queue<Sommet>> liste_compo_connexe_s;
+    Sommet tmp_s;
+    bool stop = false;
+    if(m_interface->m_bouton_connexe.get_value()==true)
+    {
+        //on reset les marquages
+        for(unsigned int i = 0; i<m_Sommets.size(); i++)
+        {
+            m_Sommets[i].is_marq = false;
+        }
+        while(ok == false) //blindage de la saisie
+        {
+            std::cout<<"entrer le sommet de depart : ";
+            std::cin>>idx;
+            for(auto &elem : m_Sommets)
+            {
+                if(elem.first == idx)
+                {
+                    ok = true;
+                }
+            }
+        }
+
+        m_Sommets[idx].is_marq = true;
+        file_pred.push(m_Sommets[idx]);
+        file_succ.push(m_Sommets[idx]);
+        //on regarde la connexite dans les predecesseurs
+        std::cout<<"element de la file des predecesseurs : "<<std::endl;
+        while(!file_pred.empty() && stop!=true)
+        {
+            std::cout<< file_pred.front().m_nom<<"; ";
+            tmp_s = file_pred.front();
+            vect_pred.push_back(file_pred.front());
+            file_pred.pop();
+            std::cout<<"size : "<<tmp_s.m_in.size()<<std::endl;
+
+
+            for(unsigned int i = 0; i<tmp_s.m_in.size();i++)
+            {
+                std::cout<<"valeur : "<<tmp_s.m_in[i]<<std::endl;
+                if(m_Sommets[tmp_s.m_in[i]].is_marq == false)
+                {
+                    file_pred.push(m_Sommets[tmp_s.m_in[i]]);
+                    m_Sommets[tmp_s.m_in[i]].is_marq = true;
+                }
+                if( j !=idx && (tmp_s.m_in[i] == idx))
+                {
+                    std::cout<< "Circuit !"<<std::endl;
+                    stop = true;
+                }
+                j++;
+            } //fin for
+        }//fin while
+
+        //on prend toutes les composantes qui ne sont pas vide de predeccesseur, car elle ne mene a rien
+        //std::cout<< "taille vect pred: "<<vect_pred.size()<<std::endl;
+        for(unsigned int i= 0; i<vect_pred.size(); i++)
+        {
+            if(vect_pred[i].m_in.size() !=0)
+            {
+                file_pred.push(vect_pred[i]);
+            }
+        }
+        //std::cout<< "taille file pred : "<<file_pred.size()<<std::endl;
+        //on vide le vecteur
+        while(!vect_pred.empty())
+        {
+            vect_pred.pop_back();
+        }
+        //on remplit le vecteur des bon elements
+        while(!file_pred.empty())
+        {
+            vect_pred.push_back(file_pred.front());
+            file_pred.pop();
+        }
+        //std::cout<< "taille vect pred pred 2: "<<vect_pred.size()<<std::endl;
+        //std::cout<< "taille file pred 2 : "<<file_pred.size()<<std::endl;
+        //reset des marquages
+        for(unsigned int i = 0; i<m_Sommets.size(); i++)
+        {
+            m_Sommets[i].is_marq = false;
+        }
+        std::cout<<"elements de la file des successeurs : "<<std::endl;
+        m_Sommets[idx].is_marq = true;
+        j = 0;
+        stop = false;
+        //on regarde la connexite dans les succeceurs
+        while(!file_succ.empty() && stop!=true)
+        {
+            std::cout<< file_succ.front().m_nom<<"; ";
+            tmp_s = file_succ.front();
+            vect_succ.push_back(file_succ.front());
+            file_succ.pop();
+            std::cout<<"size : "<<tmp_s.m_out.size()<<std::endl;
+            for(unsigned int i=0; i<tmp_s.m_out.size();i++)
+            {
+                std::cout<<"valeur : "<<tmp_s.m_out[i]<<std::endl;
+                if(m_Sommets[tmp_s.m_out[i]].is_marq == false)
+                {
+                    file_succ.push(m_Sommets[tmp_s.m_out[i]]);
+                    m_Sommets[tmp_s.m_out[i]].is_marq = true;
+                }
+                 if( j !=idx && (tmp_s.m_out[i] == idx))
+                {
+                    std::cout<< "Circuit !"<<std::endl;
+                    stop = true;
+                }
+                j++;
+            }//fin for
+        }//fin while
+
+        //std::cout<< "taille vect succ : "<<vect_pred.size()<<std::endl;
+        //on prend toutes c=les composantes qui ne sont pas vide de predeccesseur, car elle ne mene a rien
+        for(unsigned int i= 0; i<vect_succ.size(); i++)
+        {
+            if(vect_succ[i].m_out.size() !=0)
+            {
+                file_succ.push(vect_succ[i]);
+            }
+        }
+        //std::cout<< "taille file succ : "<<file_pred.size()<<std::endl;
+        //on vide le vecteur
+        while(!vect_succ.empty())
+        {
+            vect_succ.pop_back();
+        }
+        //on remplit le vecteur des bon elements
+        while(!file_succ.empty())
+        {
+            vect_succ.push_back(file_succ.front());
+            file_succ.pop();
+        }
+        //std::cout<< "taille vect succ pred 2: "<<vect_pred.size()<<std::endl;
+        //std::cout<< "taille file succ 2 : "<<file_pred.size()<<std::endl;
+
+
+        //on affiche les elements des 2 vecteurs
+        std::cout<<"pred : "<<std::endl;
+        for(unsigned int i = 0; i<vect_pred.size(); i++)
+        {
+            std::cout<< vect_pred[i].m_nom<<std::endl;
+        }
+        std::cout<<"succ : "<<std::endl;
+        for(unsigned int i = 0; i<vect_succ.size(); i++)
+        {
+            std::cout<< vect_succ[i].m_nom<<std::endl;
+        }
+
+        //on troouve dans le vecteur principal les elements de la compo forte connexe
+        for(unsigned int i=0; i<vect_pred.size(); i++)
+        {
+            for(unsigned int k=0; k<vect_succ.size(); k++)
+            {
+                if (vect_pred[i].m_nom ==  vect_succ[k].m_nom)
+                    {
+                        comp_forte_connexe.push_back(vect_pred[i]);
+                        std::cout<< "OK"<<std::endl;
+                    }
+            }
+        }
+
+        //on les marques (couleur : Marron)
+        for(unsigned int i = 0; i<comp_forte_connexe.size(); i++)
+        {
+            for(unsigned int k = 0; k<m_Sommets.size(); k++)
+            {
+                if(comp_forte_connexe[i].m_nom == m_Sommets[k].m_nom && comp_forte_connexe[i].m_value == m_Sommets[k].m_value)
+                {
+                    m_Sommets[k].m_color = 1;
+                }
+            }
+        }
+        std::cout<<"Fin :)"<<std::endl;
+    }
+    m_interface->m_bouton_connexe.set_value(false);
+
+
+
+}//fin cherche connexe
+
+///remet les marquages de sommet a 0
+void Graph::remise_zero()
+{
+
+    if(m_interface->m_bouton_retirer.get_value() == true)
+    {
+        //std::cout<<"Bonjour !"<<std::endl;
+        for(unsigned int i =0; i<m_Sommets.size();i++)
+        {
+            m_Sommets[i].m_color = 0;
+        }
+    }
+    m_interface->m_bouton_retirer.set_value(false);
+
+
 }
 
 
