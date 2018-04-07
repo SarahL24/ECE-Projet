@@ -71,6 +71,11 @@
 
 ***********************************************************************************************/
 
+/*!
+ * \file graphe.h
+ * \brief  classes : graphe, arc et sommet
+ *
+ */
 #include <vector>
 #include <map>
 #include <string>
@@ -81,13 +86,18 @@
 #include <fstream>
 #include <vector>
 #include <iostream>
+#include <queue>
 
 #include "grman/grman.h"
 
 /***************************************************
-                    VERTEX
+                    SOMMET
 ****************************************************/
-
+/*! \class SommetInterface
+ * \brief classe representant les sommets graphe
+ *
+ *  La classe gere la visulalisation des sommets du graphe
+ */
 class SommetInterface
 {
     // Les (methodes des) classes amies pourront accéder
@@ -98,37 +108,32 @@ class SommetInterface
 
     private :
 
-        /// Les widgets de l'interface. N'oubliez pas qu'il ne suffit pas de déclarer
-        /// ici un widget pour qu'il apparaisse, il faut aussi le mettre en place et
-        /// le paramétrer ( voir l'implémentation du constructeur dans le .cpp )
+        /*! Les widgets de l'interface.*/
 
-        // La boite qui contient toute l'interface d'un sommet
-        grman::WidgetBox m_top_box;
+        grman::WidgetBox m_top_box; /*!< La boite qui contient toute l'interface d'un sommet*/
 
-        // Un slider de visualisation/modification de la valeur du sommet
-        grman::WidgetVSlider m_slider_value;
+        grman::WidgetVSlider m_slider_value; /*!< Un slider de visualisation/modification de la valeur du sommet*/
 
-        // Un label de visualisation de la valeur du sommet
-        grman::WidgetText m_label_value;
+        grman::WidgetText m_label_value; /*!< Un label de visualisation de la valeur du sommet*/
 
-        // Une image de "remplissage"
-        grman::WidgetImage m_img;
+        grman::WidgetImage m_img; /*!< Une image de "remplissage"*/
 
-        // Un label indiquant l'index du sommet
-        grman::WidgetText m_label_idx;
+        grman::WidgetText m_label_idx; /*!<  Un label indiquant l'index du sommet*/
 
-        // Une boite pour le label précédent
-        grman::WidgetText m_box_label_idx;
+        grman::WidgetText m_box_label_idx; /*!<  Une boite pour le label précédent*/
 
     public :
 
         // Le constructeur met en place les éléments de l'interface
         // voir l'implémentation dans le .cpp
         SommetInterface(int idx, int x, int y, std::string pic_name="", int pic_idx=0);
-        //bool Suppr();
 };
 
-
+/*! \class Sommet
+ * \brief classe gerant les sommets du graphe
+ *
+ *  La classe gere l'ensemble des sommets du graphe
+ */
 class Sommet
 {
     // Les (methodes des) classes amies pourront accéder
@@ -139,14 +144,14 @@ class Sommet
     friend class ArcInterface;
 
     private :
-        /// liste des indices des arcs arrivant au sommet : accès aux prédécesseurs
-        std::vector<int> m_in;
+        ///
+        std::vector<int> m_in; /*!< liste des indices des arcs arrivant au sommet : accès aux prédécesseurs*/
 
-        /// liste des indices des arcs partant du sommet : accès aux successeurs
-        std::vector<int> m_out;
+        ///
+        std::vector<int> m_out; /*!< liste des indices des arcs partant du sommet : accès aux successeurs*/
 
         /// un exemple de donnée associée à l'arc, on peut en ajouter d'autres...
-        double m_value;
+        double m_value; /*!< valeur du sommet*/
 
         /// le POINTEUR sur l'interface associée, nullptr -> pas d'interface
         std::shared_ptr<SommetInterface> m_interface = nullptr;
@@ -155,9 +160,16 @@ class Sommet
         // La ligne précédente est en gros équivalent à la ligne suivante :
         // SommetInterface * m_interface = nullptr;
 
-        std::string m_nom;
-        int m_coordx;
-        int m_coordy;
+        std::string m_nom;  /*!< nom du sommet*/
+        int m_coordx;  /*!< coordonnees en x*/
+        int m_coordy;  /*!< coordonnees en y*/
+        bool is_marq = false;  /*!< marquage*/
+        int m_color = 0; /*!< couleur de la boite*/
+
+                ///Ressources
+
+        double m_coeff_reproduction=0.1;
+        double m_croissance_basic=1;
 
     public:
 
@@ -179,9 +191,13 @@ class Sommet
 
 
 /***************************************************
-                    EDGE
+                    ARC
 ****************************************************/
-
+/*! \class ArcInterface
+ * \brief classe representant les arcs graphe
+ *
+ *  La classe gere la visulalisation des arcs du graphe
+ */
 class ArcInterface
 {
     // Les (methodes des) classes amies pourront accéder
@@ -191,25 +207,21 @@ class ArcInterface
 
     private :
 
-        /// Les widgets de l'interface. N'oubliez pas qu'il ne suffit pas de déclarer
-        /// ici un widget pour qu'il apparaisse, il faut aussi le mettre en place et
-        /// le paramétrer ( voir l'implémentation du constructeur dans le .cpp )
+        /*! Les widgets de l'interface.*/
 
-        // Le WidgetEdge qui "contient" toute l'interface d'un arc
-        grman::WidgetEdge m_top_edge;
 
-        // Une boite pour englober les widgets de réglage associés
-        grman::WidgetBox m_box_edge;
+        grman::WidgetEdge m_top_edge; /*!< Le WidgetEdge qui "contient" toute l'interface d'un arc*/
 
-        // Un slider de visualisation/modification du poids valeur de l'arc
-        grman::WidgetVSlider m_slider_weight;
 
-        // Un label de visualisation du poids de l'arc
-        grman::WidgetText m_label_weight;
+        grman::WidgetBox m_box_edge; /*!< Une boite pour englober les widgets de réglage associés*/
 
-        //une boite pour afficher l'index de l'arete
-        grman::WidgetBox m_box_index;
-        //lebel de visualisation de l'index
+        grman::WidgetVSlider m_slider_weight; /*!< Un slider de visualisation/modification du poids valeur de l'arc*/
+
+
+        grman::WidgetText m_label_weight; /*!<  Un label de visualisation du poids de l'arc*/
+
+        grman::WidgetBox m_box_index; /*!< une boite pour afficher l'index de l'arete*/
+        //label de visualisation de l'index
         grman::WidgetText m_label_index;
 
 
@@ -220,7 +232,11 @@ class ArcInterface
         ArcInterface(Sommet& from, Sommet& to);
 };
 
-
+/*! \class Arc
+ * \brief classe gerant les arcs du graphe
+ *
+ *  La classe gere l'ensemble des arcs du graphe
+ */
 class Arc
 {
     // Les (methodes des) classes amies pourront accéder
@@ -229,20 +245,16 @@ class Arc
     friend class ArcInterface;
 
     private :
-        /// indice du sommet de départ de l'arc
-        int m_from;
+        int m_from; /*!< indice du sommet de depart de l'arc*/
 
-        /// indice du sommet d'arrivée de l'arc
-        int m_to;
+        int m_to; /*!< indice du sommet d'arrivee de l'arc*/
 
-        /// un exemple de donnée associée à l'arc, on peut en ajouter d'autres...
-        double m_weight;
+        double m_weight; /*!< poids de l'arc*/
 
-        ///Index de l'arc
-        int m_index;
+        int m_index; /*!< Index de l'arc*/
 
         /// le POINTEUR sur l'interface associée, nullptr -> pas d'interface
-        std::shared_ptr<ArcInterface> m_interface = nullptr;
+        std::shared_ptr<ArcInterface> m_interface = nullptr; /*!POINTEUR sur l'interface associée*/
 
 
     public:
@@ -267,43 +279,61 @@ class Arc
 /***************************************************
                     GRAPH
 ****************************************************/
-
+/*! \class GrapheInterface
+ * \brief classe representant le graphe
+ *
+ *  La classe gere la visulalisation du graphe
+ */
 class GraphInterface
 {
     friend class Graph;
 
     private :
 
-        /// Les widgets de l'interface. N'oubliez pas qu'il ne suffit pas de déclarer
-        /// ici un widget pour qu'il apparaisse, il faut aussi le mettre en place et
-        /// le paramétrer ( voir l'implémentation du constructeur dans le .cpp )
+        /*! Les widgets de l'interface.*/
 
-        /// La boite qui contient toute l'interface d'un graphe
-        grman::WidgetBox m_top_box;
 
-        /// Dans cette boite seront ajoutés les (interfaces des) sommets et des arcs...
-        grman::WidgetBox m_main_box;
+        grman::WidgetBox m_top_box; /*!< La boite qui contient toute l'interface d'un graphe*/
 
-        /// Dans cette boite seront ajoutés des boutons de contrôle etc...
-        grman::WidgetBox m_tool_box;
+        grman::WidgetBox m_main_box; /*!< Dans cette boite seront ajoutés les (interfaces des) sommets et des arcs...*/
 
-        grman::WidgetButton m_bouton_sauv;       // Sera le bouton avec le texte sauvegarde
+        grman::WidgetBox m_tool_box; /*!< Dans cette boite seront ajoutés des boutons de contrôle etc....*/
+
+        grman::WidgetButton m_bouton_sauv;      /*!< Bouton pour sauvegarer le graphe*/
         grman::WidgetText m_bouton_label_sauv;
-        grman::WidgetCheckBox m_pause;       // Sera la checkbox avec le texte pause
-        grman::WidgetText m_checkbox_label_paus;
-        grman::WidgetButton m_bouton_charge;       // Sera le bouton avec le texte chargement
-        grman::WidgetText m_bouton_label_charge;
-        grman::WidgetButton m_bouton_ajout;       // Sera le bouton avec le texte ajouter
-        grman::WidgetText m_bouton_label_ajout;
-        grman::WidgetButton m_bouton_suppr_s;       // Sera le bouton avec le texte supprimer les sommet
-        grman::WidgetText m_bouton_label_suppr_s;
-        grman::WidgetButton m_bouton_suppr_a;       // Sera le bouton avec le texte supprimer les arc
-        grman::WidgetText m_bouton_label_suppr_a;
-        grman::WidgetButton m_bouton_quit;       // Sera le bouton avec le texte supprimer
-        grman::WidgetText m_bouton_label_quit;     //bouton pour quitter l'application
 
-        // A compléter éventuellement par des widgets de décoration ou
-        // d'édition (boutons ajouter/enlever ...)
+        //grman::WidgetCheckBox m_pause;      Sera la checkbox avec le texte pause
+        //grman::WidgetText m_checkbox_label_paus;
+
+        grman::WidgetButton m_bouton_charge;     /*!< Bouton pour charger un graphe*/
+        grman::WidgetText m_bouton_label_charge;
+
+        grman::WidgetButton m_bouton_ajout_sommet;       /*!< Bouton pour ajouter un sommet*/
+        grman::WidgetText m_bouton_label_ajout_sommet;
+
+        grman::WidgetButton m_bouton_ajout_arc;       /*!< Bouton pour ajouter un arc*/
+        grman::WidgetText m_bouton_label_ajout_arc;
+
+        grman::WidgetButton m_bouton_suppr_s;       /*!< Bouton pour supprimer un sommet*/
+        grman::WidgetText m_bouton_label_suppr_s;
+
+        grman::WidgetButton m_bouton_suppr_a;       /*!< Bouton pour supprimer un arc*/
+        grman::WidgetText m_bouton_label_suppr_a;
+
+        grman::WidgetButton m_bouton_quit;       /*!< Bouton pour quitter l'application*/
+        grman::WidgetText m_bouton_label_quit;
+
+        grman::WidgetButton m_bouton_connexe; /*!< Bouton pour chercher les composantes fortement connexe*/
+        grman::WidgetText m_bouton_label_connexe;
+
+        grman::WidgetButton m_bouton_retirer; /*!< Bouton pour retirer les marquage de l'interface*/
+        grman::WidgetText m_bouton_label_retirer;
+
+        grman::WidgetButton m_bouton_etude; /*!< Bouton pour lancer l'étude temporelle*/
+        grman::WidgetText m_bouton_label_etude;
+        grman::WidgetButton m_bouton_arret; /*!< Bouton pour arreter l'etude temporelle*/
+        grman::WidgetText m_bouton_label_arret;
+
 
 
 
@@ -311,56 +341,151 @@ class GraphInterface
 
         // Le constructeur met en place les éléments de l'interface
         // voir l'implémentation dans le .cpp
-        GraphInterface(int x, int y, int w, int h);
+    /*!
+     *  \brief Constructeur
+     *
+     *  Constructeur de la classe grapheinterface
+     *
+     *  \param positions
+     */
+    GraphInterface(int x, int y, int w, int h);
 };
 
 
+/*! \class Graphe
+ * \brief classe gerant le graphe
+ *
+ *  La classe gere le graphe et toutes es fonctiosn associées
+ */
 class Graph
 {
-    private :
 
-        /// La "liste" des arêtes
-        std::map<int, Arc> m_arcs;
+public :
 
-        /// La liste des sommets
-        std::map<int, Sommet> m_Sommets;
+        std::map<int, Arc> m_arcs; /*!< Liste des aretes du graphe*/
+
+        std::map<int, Sommet> m_Sommets; /*!< Liste des sommets du graphe*/
 
         /// le POINTEUR sur l'interface associée, nullptr -> pas d'interface
-        std::shared_ptr<GraphInterface> m_interface = nullptr;
+        std::shared_ptr<GraphInterface> m_interface = nullptr; /*!POINTEUR sur l'interface associée*/
 
-        ///ordre, nb arete
-        int m_ordre;
-        int m_nb_arete;
-
+        int m_ordre; /*!< ordre du graphe*/
+        int m_nb_arete; /*!< nombre d'aret du graphe*/
 
 
 
 
-    public:
+
+    //public:
 
         /// Les constructeurs sont à compléter selon vos besoin...
         /// Ici on ne donne qu'un seul constructeur qui peut utiliser une interface
         Graph (GraphInterface *interface=nullptr) :
             m_interface(interface)  {  }
 
-        void add_interfaced_vertex(int idx, double value, int x, int y, std::string pic_name="", int pic_idx=0 );
-        void add_interfaced_Sommet(int idx, double value, int x, int y, std::string path, int pic_idx );
+        /*!
+        *  \brief ajout d'un sommet
+        *
+        *  Ajoute un sommet dans l'interface graphique et dans notre map de sommets
+        */
+        void add_interfaced_vertex(int idx, double value, int x, int y, std::string pic_name="", int pic_idx=0, double coef_repro = 0, double coef_basic=0 );
+        /*!
+        *  \brief ajout d'un sommet manuellement
+        *
+        *  Ajoute un sommet dans l'interface graphique et dans notre map de sommets a partir de l'interface
+        */
+        void add_interfaced_Sommet(int idx, double value, int x, int y, std::string path, int pic_idx, double coeef_repro=0, double coef_basic=0 );
+
+        /*!
+        *  \brief ajout d'un arc
+        *
+        *  Ajoute un sommet dans l'interface graphique et dans notre map d'arcs
+        */
         void add_interfaced_edge(int idx, int vert1, int vert2, double weight=0);
+        /*!
+        *  \brief ajout d'un arc manuellement
+        *
+        *  Ajoute un arc dans l'interface graphique et dans notre map d'arc
+        */
+        void add_interfaced_Arc(int idx, int id_vert1, int id_vert2, double weight);
 
         /// Méthode spéciale qui construit un graphe arbitraire (démo)
         /// Voir implémentation dans le .cpp
         /// Cette méthode est à enlever et remplacer par un système
         /// de chargement de fichiers par exemple.
         void make_example();
-        void is_charge(); //sert a savoir si le bouron charge est appuyé, si oui, on carge un fichier
-        void charge_file(bool charge); //charge un graphe a partir d'un fichier
-        void sauvegarde_graph(); //enregistre tout un graphe, positions, ect...
+        /*!
+        *  \brief  si l'utilisateur veut charger un graphe
+        *
+        *  sert a savoir si l'utilisateur veut charger un graphe
+        */
+        void is_charge();
+
+        /*!
+        *  \brief charge un graphe
+        *
+        *  charge un graphe a partir d'un fichier texte
+        */
+        void charge_file(bool charge);
+        /*!
+        *  \brief sauvegarde un graphe
+        *
+        *  sauvegarde un graphe dans un fichier texte
+        */
+        void sauvegarde_graph();
+        /*!
+        *  \brief quitte l'application
+        *
+        *  quitte l'application si l'utilisateur le demande
+        */
         bool quitter();
-        void suppr_arc();
+        /*!
+        *  \brief supprime un arc
+        *
+        *  supprime un arc
+        */
+        void suppr_arc(int idx);
+        /*!
+        *  \brief supprime un sommet
+        *
+        *  supprime un sommet et les arcs qui lui sont rattaches
+        */
         void suppr_sommet();
+        //bool suppr_sommet();
+        /*!
+        *  \brief cherche les composantes fortement connexe du graphe
+        */
+        void cherche_connexe();
+
+        /*!
+        *  \brief cherche l'indice  le plus grand parmi tous les sommets
+        */
+        int cherche_idx_s();
+        /*!
+        *  \brief cherche l'indice  le plus grand parmi tous les arcs
+        */
+        int cherche_idx_a();
+        /*!
+        *  \brief sremet tous les marquage de l'interface a zero
+        */
+        void remise_zero();
+        /*!
+        *  \brief Etude temporelle
+        *
+        *  Etude temporelle de l'ecosysteme
+        */
+        int simu(int tours_de_boucle);
+        /*!
+        *  \brief Arret de l'etude temporelle
+        */
+        void arret_etude();
 
 
-        /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
+        /*!
+        *  \brief MAJ de l'interface
+        *
+        *  La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
+        */
         void update();
 };
 
