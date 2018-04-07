@@ -1,0 +1,62 @@
+# depslib dependency file v1.0
+1522575069 source:c:\users\sarah\documents\cours ece\ing 2\2eme semestre\info\projet\trophic_networks_ece_v1\grman\coords.cpp
+	"coords.h"
+
+1522575424 c:\users\sarah\documents\cours ece\ing 2\2eme semestre\info\projet\trophic_networks_ece_v1\grman\coords.h
+	<cmath>
+
+1522801406 source:c:\users\sarah\documents\cours ece\ing 2\2eme semestre\info\projet\trophic_networks_ece_v1\grman\grman.cpp
+	<cmath>
+	<unordered_map>
+	<unordered_set>
+	<utility>
+	<string>
+	<iostream>
+	<regex>
+	"grman.h"
+	<allegro.h>
+	<png.h>
+	<loadpng.h>
+	<jpgalleg.h>
+
+1522539041 c:\users\sarah\documents\cours ece\ing 2\2eme semestre\info\projet\trophic_networks_ece_v1\grman\grman.h
+	<allegro.h>
+	<string>
+	"grman_couleurs.h"
+	"coords.h"
+	"widget.h"
+
+1509222372 c:\users\sarah\documents\cours ece\ing 2\2eme semestre\info\projet\trophic_networks_ece_v1\grman\grman_couleurs.h
+
+1522854826 c:\users\sarah\documents\cours ece\ing 2\2eme semestre\info\projet\trophic_networks_ece_v1\grman\widget.h
+	"grman.h"
+	<iostream>
+	<string>
+	<vector>
+	<algorithm>
+	<allegro.h>
+
+1522854808 source:c:\users\sarah\documents\cours ece\ing 2\2eme semestre\info\projet\trophic_networks_ece_v1\grman\widget.cpp
+	"widget.h"
+
+1522855510 source:c:\users\sarah\documents\cours ece\ing 2\2eme semestre\info\projet\trophic_networks_ece_v1\main.cpp
+	"grman/grman.h"
+	<iostream>
+	"graph.h"
+
+1522855282 c:\users\sarah\documents\cours ece\ing 2\2eme semestre\info\projet\trophic_networks_ece_v1\graph.h
+	<vector>
+	<map>
+	<string>
+	<memory>
+	<string>
+	<stdlib.h>
+	<sstream>
+	<fstream>
+	<vector>
+	<iostream>
+	"grman/grman.h"
+
+1522857290 source:c:\users\sarah\documents\cours ece\ing 2\2eme semestre\info\projet\trophic_networks_ece_v1\graph.cpp
+	"graph.h"
+

@@ -1,0 +1,16 @@
+7
+Foret/0/117/112
+Iguanodon/54/375/21
+Oviraptor/98/677/36
+Gigantoraptor/100/703/264
+Allausaure/100/608/543
+Spinosaure/100/201/530
+Ver de terre/100/-5/364
+7
+0/1/100
+0/0/0
+2/3/78
+3/4/37
+4/5/25
+5/6/25
+6/0/50
