@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<FileVersion major="1" minor="0" />
+	<ActiveTarget name="Debug" />
+	<File name="grman\grman_couleurs.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="733" topLine="28" />
+		</Cursor>
+	</File>
+	<File name="grman\widget.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="496" topLine="15" />
+		</Cursor>
+	</File>
+	<File name="graph.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="9906" topLine="154" />
+		</Cursor>
+		<Folding>
+			<Collapse line="91" />
+			<Collapse line="271" />
+			<Collapse line="318" />
+		</Folding>
+	</File>
+	<File name="graph.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="22321" topLine="143" />
+		</Cursor>
+		<Folding>
+			<Collapse line="10" />
+			<Collapse line="48" />
+			<Collapse line="62" />
+			<Collapse line="81" />
+			<Collapse line="123" />
+			<Collapse line="139" />
+			<Collapse line="156" />
+			<Collapse line="224" />
+			<Collapse line="253" />
+			<Collapse line="275" />
+			<Collapse line="346" />
+			<Collapse line="370" />
+			<Collapse line="383" />
+			<Collapse line="514" />
+			<Collapse line="548" />
+			<Collapse line="558" />
+		</Folding>
+	</File>
+	<File name="grman\widget.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="762" topLine="18" />
+		</Cursor>
+	</File>
+	<File name="grman\grman.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="523" topLine="15" />
+		</Cursor>
+	</File>
+	<File name="main.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="400" topLine="0" />
+		</Cursor>
+	</File>
+</CodeBlocks_layout_file>
