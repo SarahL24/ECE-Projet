@@ -1,0 +1,16 @@
+Armillaria
+Baie
+Cerf
+Corbeau
+Elan
+Faucon
+Herbe
+Lievre
+Loup
+Ours_brun
+Ours_noir
+Sanglier
+Tamia
+Tigre
+Truite    
+Ver_de_terre
